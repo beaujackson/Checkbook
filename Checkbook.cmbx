@@ -1,0 +1,14 @@
+<Combine fileversion="1.0" name="Checkbook" description="Converted Visual Studio.NET Solution">
+  <StartMode startupentry="Checkbook" single="True" />
+  <Entries>
+    <Entry filename=".\Checkbook.prjx" />
+  </Entries>
+  <Configurations active="Debug">
+    <Configuration name="Release">
+      <Entry name="Checkbook" configurationname="Release" build="False" />
+    </Configuration>
+    <Configuration name="Debug">
+      <Entry name="Checkbook" configurationname="Debug" build="False" />
+    </Configuration>
+  </Configurations>
+</Combine>
