@@ -199,6 +199,9 @@ namespace Checkbook
 			this.menuProperties = new System.Windows.Forms.MenuItem();
 			this.menuImport = new System.Windows.Forms.MenuItem();
 			this.menuSep1 = new System.Windows.Forms.MenuItem();
+			this.menuNewBusiness = new System.Windows.Forms.MenuItem();
+			this.menuBusinessProperties = new System.Windows.Forms.MenuItem();
+			this.menuItem1 = new System.Windows.Forms.MenuItem();
 			this.menuExit = new System.Windows.Forms.MenuItem();
 			this.menuEdit = new System.Windows.Forms.MenuItem();
 			this.menuCut = new System.Windows.Forms.MenuItem();
@@ -210,9 +213,6 @@ namespace Checkbook
 			this.panelMain = new System.Windows.Forms.Panel();
 			this.panelView = new System.Windows.Forms.Panel();
 			this.splitter = new System.Windows.Forms.Splitter();
-			this.menuNewBusiness = new System.Windows.Forms.MenuItem();
-			this.menuBusinessProperties = new System.Windows.Forms.MenuItem();
-			this.menuItem1 = new System.Windows.Forms.MenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.statusText)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.statusBalance)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.statusClearedBalance)).BeginInit();
@@ -361,6 +361,23 @@ namespace Checkbook
 			this.menuSep1.Index = 4;
 			this.menuSep1.Text = "-";
 			// 
+			// menuNewBusiness
+			// 
+			this.menuNewBusiness.Index = 5;
+			this.menuNewBusiness.Text = "New &Business...";
+			this.menuNewBusiness.Click += new System.EventHandler(this.menuNewBusiness_Click);
+			// 
+			// menuBusinessProperties
+			// 
+			this.menuBusinessProperties.Index = 6;
+			this.menuBusinessProperties.Text = "Business Proper&ties...";
+			this.menuBusinessProperties.Click += new System.EventHandler(this.menuBusinessProperties_Click);
+			// 
+			// menuItem1
+			// 
+			this.menuItem1.Index = 7;
+			this.menuItem1.Text = "-";
+			// 
 			// menuExit
 			// 
 			this.menuExit.Index = 8;
@@ -442,23 +459,6 @@ namespace Checkbook
 			this.splitter.Size = new System.Drawing.Size(4, 347);
 			this.splitter.TabIndex = 1;
 			this.splitter.TabStop = false;
-			// 
-			// menuNewBusiness
-			// 
-			this.menuNewBusiness.Index = 5;
-			this.menuNewBusiness.Text = "New &Business...";
-			this.menuNewBusiness.Click += new System.EventHandler(this.menuNewBusiness_Click);
-			// 
-			// menuBusinessProperties
-			// 
-			this.menuBusinessProperties.Index = 6;
-			this.menuBusinessProperties.Text = "Business Proper&ties...";
-			this.menuBusinessProperties.Click += new System.EventHandler(this.menuBusinessProperties_Click);
-			// 
-			// menuItem1
-			// 
-			this.menuItem1.Index = 7;
-			this.menuItem1.Text = "-";
 			// 
 			// Checkbook
 			// 
