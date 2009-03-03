@@ -10,7 +10,8 @@ namespace Checkbook
 	/// </summary>
 	public class Account : BaseRecord
 	{
-		public Account() : base("accounts")
+		public Account()
+			: base("accounts")
 		{
 			Fields = new DBField[]
 			{
@@ -25,7 +26,7 @@ namespace Checkbook
 
 		public override void Store(OleDbConnection writeConnection)
 		{
-			if(false == CanUpdate)
+			if (false == CanUpdate)
 			{
 				Id = DateTime.Now.Ticks.ToString();
 
@@ -38,7 +39,7 @@ namespace Checkbook
 				UpdateRecord(sql, writeConnection);
 			}
 		}
-		
+
 		public string Id
 		{
 			get { return (string)GetFieldValue("id"); }

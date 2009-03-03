@@ -10,55 +10,45 @@ using System.Configuration;
 namespace Checkbook
 {
 	/// <summary>
-	/// Summary description for CheckRegistr.
+	/// Summary description for LedgerEntry.
 	/// </summary>
-	public class CheckRegistry : CheckbookControl
+	public class LedgerEntry : BusinessControl
 	{
 		private System.Windows.Forms.TextBox textDate;
 		private System.Windows.Forms.ComboBox comboType;
 		private System.Windows.Forms.MenuItem menuContextDelete;
 		private System.Windows.Forms.Button btnNew;
-		private System.Windows.Forms.TextBox textCheckNumber;
 		private System.Windows.Forms.Button btnNext;
-		private System.Windows.Forms.ListView listTransactions;
+		private System.Windows.Forms.ListView listEntries;
 		private System.Windows.Forms.TextBox textAmount;
 		private System.Windows.Forms.Button btnFirst;
 		private System.Windows.Forms.Button btnPrevious;
-		private System.Windows.Forms.CheckBox checkCleared;
-		private System.Windows.Forms.ComboBox comboDescription;
+		private System.Windows.Forms.ComboBox comboAccount;
 		private System.Windows.Forms.ContextMenu contextMenu;
 		private System.Windows.Forms.ColumnHeader columnHeader4;
 		private System.Windows.Forms.TextBox textComments;
 		private System.Windows.Forms.ColumnHeader columnHeader3;
-		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.ColumnHeader columnHeader5;
 		private System.Windows.Forms.Label label7;
-		private System.Windows.Forms.ColumnHeader columnHeader1;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.ColumnHeader columnHeader2;
 		private System.Windows.Forms.Button btnLast;
 		private System.Windows.Forms.Label label8;
-		private CheckBox checkArchived;
-
-		private bool m_archived = false;
+		private ComboBox comboDescription;
+		private Label label3;
 
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
 		private System.ComponentModel.Container components = null;
 
-		public CheckRegistry()
+		public LedgerEntry()
 		{
 			// This call is required by the Windows.Forms Form Designer.
 			InitializeComponent();
-
-			CheckbookConfig config = CheckbookConfig.GetInstance();
-
-			comboType.Items.AddRange(config.DebitTypes);
-			comboType.Items.AddRange(config.CreditTypes);
 		}
 
 		/// <summary> 
@@ -87,29 +77,26 @@ namespace Checkbook
 			this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
-			this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
 			this.label7 = new System.Windows.Forms.Label();
 			this.columnHeader5 = new System.Windows.Forms.ColumnHeader();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
 			this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
 			this.textComments = new System.Windows.Forms.TextBox();
 			this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
 			this.contextMenu = new System.Windows.Forms.ContextMenu();
 			this.menuContextDelete = new System.Windows.Forms.MenuItem();
-			this.comboDescription = new System.Windows.Forms.ComboBox();
-			this.checkCleared = new System.Windows.Forms.CheckBox();
+			this.comboAccount = new System.Windows.Forms.ComboBox();
 			this.btnPrevious = new System.Windows.Forms.Button();
 			this.btnFirst = new System.Windows.Forms.Button();
 			this.textAmount = new System.Windows.Forms.TextBox();
-			this.listTransactions = new System.Windows.Forms.ListView();
+			this.listEntries = new System.Windows.Forms.ListView();
 			this.btnNext = new System.Windows.Forms.Button();
-			this.textCheckNumber = new System.Windows.Forms.TextBox();
 			this.btnNew = new System.Windows.Forms.Button();
 			this.comboType = new System.Windows.Forms.ComboBox();
 			this.textDate = new System.Windows.Forms.TextBox();
-			this.checkArchived = new System.Windows.Forms.CheckBox();
+			this.comboDescription = new System.Windows.Forms.ComboBox();
+			this.label3 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// label8
@@ -117,8 +104,8 @@ namespace Checkbook
 			this.label8.Location = new System.Drawing.Point(8, 144);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(80, 20);
-			this.label8.TabIndex = 19;
-			this.label8.Text = "Transactions";
+			this.label8.TabIndex = 17;
+			this.label8.Text = "Entries";
 			this.label8.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
 			// 
 			// btnLast
@@ -126,7 +113,7 @@ namespace Checkbook
 			this.btnLast.Location = new System.Drawing.Point(168, 120);
 			this.btnLast.Name = "btnLast";
 			this.btnLast.Size = new System.Drawing.Size(25, 20);
-			this.btnLast.TabIndex = 16;
+			this.btnLast.TabIndex = 15;
 			this.btnLast.Text = ">|";
 			this.btnLast.Click += new System.EventHandler(this.btnLast_Click);
 			// 
@@ -137,67 +124,53 @@ namespace Checkbook
 			// 
 			// label4
 			// 
-			this.label4.Location = new System.Drawing.Point(3, 40);
+			this.label4.Location = new System.Drawing.Point(270, 40);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(64, 20);
-			this.label4.TabIndex = 6;
-			this.label4.Text = "Description";
+			this.label4.Size = new System.Drawing.Size(51, 20);
+			this.label4.TabIndex = 8;
+			this.label4.Text = "Account";
 			this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// label5
 			// 
-			this.label5.Location = new System.Drawing.Point(296, 40);
+			this.label5.Location = new System.Drawing.Point(306, 7);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(48, 20);
-			this.label5.TabIndex = 8;
+			this.label5.TabIndex = 4;
 			this.label5.Text = "Amount";
 			this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// columnHeader1
-			// 
-			this.columnHeader1.Text = "Type";
 			// 
 			// label7
 			// 
 			this.label7.Location = new System.Drawing.Point(3, 72);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(64, 20);
-			this.label7.TabIndex = 11;
+			this.label7.TabIndex = 10;
 			this.label7.Text = "Comments";
 			this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// columnHeader5
 			// 
-			this.columnHeader5.Text = "Clear";
-			this.columnHeader5.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			this.columnHeader5.Width = 50;
+			this.columnHeader5.Text = "Account";
+			this.columnHeader5.Width = 117;
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(3, 8);
+			this.label1.Location = new System.Drawing.Point(3, 7);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(64, 20);
+			this.label1.Size = new System.Drawing.Size(60, 20);
 			this.label1.TabIndex = 0;
-			this.label1.Text = "Trans date";
+			this.label1.Text = "Entry date";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(144, 8);
+			this.label2.Location = new System.Drawing.Point(142, 7);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(64, 20);
 			this.label2.TabIndex = 2;
-			this.label2.Text = "Trans type";
+			this.label2.Text = "Entry type";
 			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// label3
-			// 
-			this.label3.Location = new System.Drawing.Point(368, 8);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(48, 20);
-			this.label3.TabIndex = 4;
-			this.label3.Text = "Check #";
-			this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// columnHeader3
 			// 
@@ -214,13 +187,13 @@ namespace Checkbook
 			this.textComments.Name = "textComments";
 			this.textComments.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.textComments.Size = new System.Drawing.Size(408, 40);
-			this.textComments.TabIndex = 12;
+			this.textComments.TabIndex = 11;
 			// 
 			// columnHeader4
 			// 
 			this.columnHeader4.Text = "Amount";
 			this.columnHeader4.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-			this.columnHeader4.Width = 75;
+			this.columnHeader4.Width = 62;
 			// 
 			// contextMenu
 			// 
@@ -233,28 +206,20 @@ namespace Checkbook
 			this.menuContextDelete.Text = "Delete";
 			this.menuContextDelete.Click += new System.EventHandler(this.menuContextDelete_Click);
 			// 
-			// comboDescription
+			// comboAccount
 			// 
-			this.comboDescription.Location = new System.Drawing.Point(72, 40);
-			this.comboDescription.Name = "comboDescription";
-			this.comboDescription.Size = new System.Drawing.Size(216, 21);
-			this.comboDescription.TabIndex = 7;
-			this.comboDescription.KeyUp += new System.Windows.Forms.KeyEventHandler(this.comboDescription_KeyUp);
-			// 
-			// checkCleared
-			// 
-			this.checkCleared.Location = new System.Drawing.Point(416, 40);
-			this.checkCleared.Name = "checkCleared";
-			this.checkCleared.Size = new System.Drawing.Size(64, 20);
-			this.checkCleared.TabIndex = 10;
-			this.checkCleared.Text = "Cleared";
+			this.comboAccount.Location = new System.Drawing.Point(327, 40);
+			this.comboAccount.Name = "comboAccount";
+			this.comboAccount.Size = new System.Drawing.Size(153, 21);
+			this.comboAccount.TabIndex = 9;
+			this.comboAccount.KeyUp += new System.Windows.Forms.KeyEventHandler(this.comboDescription_KeyUp);
 			// 
 			// btnPrevious
 			// 
 			this.btnPrevious.Location = new System.Drawing.Point(104, 120);
 			this.btnPrevious.Name = "btnPrevious";
 			this.btnPrevious.Size = new System.Drawing.Size(25, 20);
-			this.btnPrevious.TabIndex = 14;
+			this.btnPrevious.TabIndex = 13;
 			this.btnPrevious.Text = "<";
 			this.btnPrevious.Click += new System.EventHandler(this.btnPrevious_Click);
 			// 
@@ -263,73 +228,67 @@ namespace Checkbook
 			this.btnFirst.Location = new System.Drawing.Point(72, 120);
 			this.btnFirst.Name = "btnFirst";
 			this.btnFirst.Size = new System.Drawing.Size(25, 20);
-			this.btnFirst.TabIndex = 13;
+			this.btnFirst.TabIndex = 12;
 			this.btnFirst.Text = "|<";
 			this.btnFirst.Click += new System.EventHandler(this.btnFirst_Click);
 			// 
 			// textAmount
 			// 
-			this.textAmount.Location = new System.Drawing.Point(344, 40);
+			this.textAmount.Location = new System.Drawing.Point(360, 8);
 			this.textAmount.Name = "textAmount";
 			this.textAmount.Size = new System.Drawing.Size(64, 20);
-			this.textAmount.TabIndex = 9;
+			this.textAmount.TabIndex = 5;
 			this.textAmount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
-			// listTransactions
+			// listEntries
 			// 
-			this.listTransactions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			this.listEntries.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.listTransactions.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2,
+			this.listEntries.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader3,
-            this.columnHeader4,
-            this.columnHeader5});
-			this.listTransactions.ContextMenu = this.contextMenu;
-			this.listTransactions.FullRowSelect = true;
-			this.listTransactions.HideSelection = false;
-			this.listTransactions.Location = new System.Drawing.Point(5, 171);
-			this.listTransactions.MultiSelect = false;
-			this.listTransactions.Name = "listTransactions";
-			this.listTransactions.Size = new System.Drawing.Size(478, 136);
-			this.listTransactions.TabIndex = 20;
-			this.listTransactions.UseCompatibleStateImageBehavior = false;
-			this.listTransactions.View = System.Windows.Forms.View.Details;
-			this.listTransactions.SelectedIndexChanged += new System.EventHandler(this.listTransactions_SelectedIndexChanged);
+            this.columnHeader2,
+            this.columnHeader5,
+            this.columnHeader4});
+			this.listEntries.ContextMenu = this.contextMenu;
+			this.listEntries.FullRowSelect = true;
+			this.listEntries.HideSelection = false;
+			this.listEntries.Location = new System.Drawing.Point(5, 171);
+			this.listEntries.MultiSelect = false;
+			this.listEntries.Name = "listEntries";
+			this.listEntries.Size = new System.Drawing.Size(478, 136);
+			this.listEntries.TabIndex = 18;
+			this.listEntries.UseCompatibleStateImageBehavior = false;
+			this.listEntries.View = System.Windows.Forms.View.Details;
+			this.listEntries.SelectedIndexChanged += new System.EventHandler(this.listTransactions_SelectedIndexChanged);
 			// 
 			// btnNext
 			// 
 			this.btnNext.Location = new System.Drawing.Point(136, 120);
 			this.btnNext.Name = "btnNext";
 			this.btnNext.Size = new System.Drawing.Size(25, 20);
-			this.btnNext.TabIndex = 15;
+			this.btnNext.TabIndex = 14;
 			this.btnNext.Text = ">";
 			this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
-			// 
-			// textCheckNumber
-			// 
-			this.textCheckNumber.Location = new System.Drawing.Point(416, 8);
-			this.textCheckNumber.MaxLength = 50;
-			this.textCheckNumber.Name = "textCheckNumber";
-			this.textCheckNumber.Size = new System.Drawing.Size(64, 20);
-			this.textCheckNumber.TabIndex = 5;
 			// 
 			// btnNew
 			// 
 			this.btnNew.Location = new System.Drawing.Point(200, 120);
 			this.btnNew.Name = "btnNew";
 			this.btnNew.Size = new System.Drawing.Size(25, 20);
-			this.btnNew.TabIndex = 17;
+			this.btnNew.TabIndex = 16;
 			this.btnNew.Text = "+";
 			this.btnNew.Click += new System.EventHandler(this.btnNew_Click);
 			// 
 			// comboType
 			// 
 			this.comboType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboType.Location = new System.Drawing.Point(208, 8);
+			this.comboType.Items.AddRange(new object[] {
+            "Credit",
+            "Debit"});
+			this.comboType.Location = new System.Drawing.Point(200, 8);
 			this.comboType.Name = "comboType";
-			this.comboType.Size = new System.Drawing.Size(154, 21);
+			this.comboType.Size = new System.Drawing.Size(93, 21);
 			this.comboType.Sorted = true;
 			this.comboType.TabIndex = 3;
 			// 
@@ -342,40 +301,45 @@ namespace Checkbook
 			this.textDate.TabIndex = 1;
 			this.textDate.Leave += new System.EventHandler(this.textDate_Leave);
 			// 
-			// checkArchived
+			// comboDescription
 			// 
-			this.checkArchived.AutoSize = true;
-			this.checkArchived.Location = new System.Drawing.Point(416, 123);
-			this.checkArchived.Name = "checkArchived";
-			this.checkArchived.Size = new System.Drawing.Size(68, 17);
-			this.checkArchived.TabIndex = 18;
-			this.checkArchived.Text = "Archived";
-			this.checkArchived.UseVisualStyleBackColor = true;
+			this.comboDescription.Location = new System.Drawing.Point(72, 40);
+			this.comboDescription.Name = "comboDescription";
+			this.comboDescription.Size = new System.Drawing.Size(180, 21);
+			this.comboDescription.TabIndex = 7;
+			this.comboDescription.KeyUp += new System.Windows.Forms.KeyEventHandler(this.comboDescription_KeyUp);
 			// 
-			// CheckRegistry
+			// label3
 			// 
-			this.Controls.Add(this.checkArchived);
+			this.label3.Location = new System.Drawing.Point(3, 40);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(64, 20);
+			this.label3.TabIndex = 6;
+			this.label3.Text = "Description";
+			this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// LedgerEntry
+			// 
+			this.Controls.Add(this.comboDescription);
+			this.Controls.Add(this.label3);
 			this.Controls.Add(this.btnNew);
 			this.Controls.Add(this.btnLast);
 			this.Controls.Add(this.btnNext);
 			this.Controls.Add(this.btnPrevious);
 			this.Controls.Add(this.btnFirst);
-			this.Controls.Add(this.listTransactions);
+			this.Controls.Add(this.listEntries);
 			this.Controls.Add(this.label8);
 			this.Controls.Add(this.label7);
 			this.Controls.Add(this.textAmount);
 			this.Controls.Add(this.textComments);
-			this.Controls.Add(this.textCheckNumber);
-			this.Controls.Add(this.checkCleared);
-			this.Controls.Add(this.comboDescription);
+			this.Controls.Add(this.comboAccount);
 			this.Controls.Add(this.comboType);
 			this.Controls.Add(this.label5);
 			this.Controls.Add(this.label4);
-			this.Controls.Add(this.label3);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.textDate);
 			this.Controls.Add(this.label1);
-			this.Name = "CheckRegistry";
+			this.Name = "LedgerEntry";
 			this.Padding = new System.Windows.Forms.Padding(5);
 			this.Size = new System.Drawing.Size(488, 312);
 			this.ResumeLayout(false);
@@ -389,45 +353,53 @@ namespace Checkbook
 			m_mainWindow.AcceptButton = btnNext;
 		}
 
-		public bool LoadCheckRegistry(string accountId, bool archived)
+		public bool LoadLedgerEntry(int businessId)
 		{
             SaveRecord();
 
-			m_accountId = accountId;
-			m_archived = archived;
-
-			btnNew.Enabled = !m_archived;
+			m_businessId = businessId;
 
 			UpdateBalances();
 
 			textDate.Text = "";
 			comboType.SelectedIndex = -1;
-			textCheckNumber.Text = "";
+			comboAccount.Text = "";
+			comboAccount.SelectedIndex = -1;
+			comboAccount.Items.Clear();
 			comboDescription.Text = "";
 			comboDescription.SelectedIndex = -1;
 			comboDescription.Items.Clear();
 			textAmount.Text = "";
-			checkCleared.Checked = false;
-			checkArchived.Checked = false;
 			textComments.Text = "";
 
-			string sql = string.Format("select description from vendor_names where account_id = '{0}'", accountId);
+			string sql = string.Format("select account from ledger_accounts where business_id = {0}", businessId);
 
 			OleDbCommand selectCmd = new OleDbCommand(sql, m_dbConnection);
 			OleDbDataReader dataReader = selectCmd.ExecuteReader();
 
 			while(dataReader.Read())
 			{
+				comboAccount.Items.Add(dataReader[0].ToString());
+			}
+
+			dataReader.Close();
+
+			//@ need a query for this
+			sql = string.Format("select distinct description from ledger where business_id = {0}", businessId);
+
+			selectCmd = new OleDbCommand(sql, m_dbConnection);
+			dataReader = selectCmd.ExecuteReader();
+
+			while (dataReader.Read())
+			{
 				comboDescription.Items.Add(dataReader[0].ToString());
 			}
 
 			dataReader.Close();
 
-			listTransactions.Items.Clear();
+			listEntries.Items.Clear();
 
-			string archivedOperator = m_archived ? "=" : "<>";
-
-			sql = string.Format("select * from check_register where account_id = '{0}' and archived {1} 1 order by trans_date", accountId, archivedOperator);
+			sql = string.Format("select * from ledger where business_id = {0} order by entry_date", businessId);
 
 			selectCmd = new OleDbCommand(sql, m_dbConnection);
 			dataReader = selectCmd.ExecuteReader();
@@ -436,37 +408,26 @@ namespace Checkbook
 
 			while(dataReader.Read())
 			{
-				CheckRegister rec = new CheckRegister();
+				Ledger rec = new Ledger();
 				rec.Load(dataReader);
 
-				item = new ListViewItem();
+				item = new ListViewItem(rec.EntryDateString);
 				item.Tag = rec;
 				rec.Tag = item;
 
-				if("Check" == rec.TransType)
-				{
-					item.Text = rec.CheckNumber;
-				}
-				else
-				{
-					item.Text = rec.TransType;
-				}
-
 				item.SubItems.Add(rec.Description);
-				item.SubItems.Add(rec.TransDate.ToShortDateString());
+				item.SubItems.Add(rec.EntryAccount);
 
-				if("credit" == rec.TransCategory)
+				if(rec.EntryType == "C")
 				{
-					item.SubItems.Add(rec.Amount.ToString("C"));
+					item.SubItems.Add(rec.EntryAmount.ToString("C"));
 				}
 				else
 				{
-					item.SubItems.Add(string.Format("<{0:C}>", rec.Amount));
+					item.SubItems.Add(string.Format("<{0:C}>", rec.EntryAmount));
 				}
 				
-				item.SubItems.Add((1 == rec.Cleared) ? "Yes" : "");
-
-				listTransactions.Items.Add(item);
+				listEntries.Items.Add(item);
 			}
 
 			dataReader.Close();
@@ -481,68 +442,64 @@ namespace Checkbook
 
 		private void btnFirst_Click(object sender, System.EventArgs e)
 		{
-			if(0 != listTransactions.Items.Count)
+			if(0 != listEntries.Items.Count)
 			{
-				listTransactions.Items[0].Selected = true;;
+				listEntries.Items[0].Selected = true;;
 			}
 		}
 
 		private void btnPrevious_Click(object sender, System.EventArgs e)
 		{
-			if(0 != listTransactions.SelectedItems.Count)
+			if(0 != listEntries.SelectedItems.Count)
 			{
-				int index = listTransactions.SelectedIndices[0] - 1;
+				int index = listEntries.SelectedIndices[0] - 1;
 
 				if(index >= 0)
 				{
-					listTransactions.Items[index].Selected = true;
+					listEntries.Items[index].Selected = true;
 				}
 			}
 		}
 
 		private void btnNext_Click(object sender, System.EventArgs e)
 		{
-			if(0 != listTransactions.SelectedItems.Count)
+			if(0 != listEntries.SelectedItems.Count)
 			{
-				int index = listTransactions.SelectedIndices[0] + 1;
+				int index = listEntries.SelectedIndices[0] + 1;
 
-				if(index < listTransactions.Items.Count)
+				if(index < listEntries.Items.Count)
 				{
-					listTransactions.Items[index].Selected = true;
+					listEntries.Items[index].Selected = true;
 				}
 				else
 				{
-					if (!m_archived)
-					{
-						btnNew_Click(null, null);
-					}
+					btnNew_Click(null, null);
 				}
 			}
 		}
 
 		private void btnLast_Click(object sender, System.EventArgs e)
 		{
-			if(0 != listTransactions.Items.Count)
+			if(0 != listEntries.Items.Count)
 			{
-				listTransactions.Items[listTransactions.Items.Count - 1].Selected = true;;
+				listEntries.Items[listEntries.Items.Count - 1].Selected = true;;
 			}				
 		}
 
 		private void btnNew_Click(object sender, System.EventArgs e)
 		{
-			ListViewItem item = new ListViewItem();
-			item.SubItems.Add("");
+			ListViewItem item = new ListViewItem("");
 			item.SubItems.Add("");
 			item.SubItems.Add("");
 			item.SubItems.Add("");
 
-			CheckRegister rec = new CheckRegister();
-			rec.AccountId = m_accountId;
+			Ledger rec = new Ledger();
+			rec.BusinessId = m_businessId;
 
 			item.Tag = rec;
 			rec.Tag = item;
 
-			listTransactions.Items.Add(item);
+			listEntries.Items.Add(item);
 			item.Selected = true;
 
 			textDate.Focus();
@@ -550,7 +507,7 @@ namespace Checkbook
 
 		private void SaveRecord()
 		{
-            CheckRegister rec = Tag as CheckRegister;
+            Ledger rec = Tag as Ledger;
 
             if (rec == null) return;
 
@@ -560,18 +517,23 @@ namespace Checkbook
 
                 if (textDate.Text == "" || textDate.Text == "1/1/0001")
                 {
-                    msg = "Trans date is a required field";
+                    msg = "Entry date is a required field";
                 }
 
                 if (comboType.SelectedIndex == -1)
                 {
-                    msg = "Trans type is a required field";
+                    msg = "Entry type is a required field";
                 }
 
-                if (comboDescription.Text == "")
+                if (comboAccount.Text == "")
                 {
-                    msg = "Description is a required field";
+                    msg = "Account is a required field";
                 }
+
+				if (comboDescription.Text == "")
+				{
+					msg = "Description is a required field";
+				}
 
                 if (textAmount.Text == "")
                 {
@@ -585,13 +547,13 @@ namespace Checkbook
                     if (dr == DialogResult.Yes)
                     {
                         ListViewItem item = rec.Tag as ListViewItem;
-                        listTransactions.Items.Remove(item);
+                        listEntries.Items.Remove(item);
                         Tag = null;
                         return;
                     }
                     else
                     {
-                        MessageBox.Show(this, "Entry is not saved, but will remain in the transactions list.", "Entry not saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(this, "Entry is not saved, but will remain in the entries list.", "Entry not saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
                 }
@@ -599,49 +561,40 @@ namespace Checkbook
 
 			try
 			{
-				rec.TransDate = DateTime.Parse(textDate.Text);
-				rec.TransType = comboType.Text;
-				rec.CheckNumber = textCheckNumber.Text;
+				rec.EntryDate = DateTime.Parse(textDate.Text);
+				rec.EntryType = comboType.Text == "Credit" ? "C" : "D";
+				rec.EntryAmount = Convert.ToDouble(textAmount.Text);
 				rec.Description = comboDescription.Text;
-				rec.Amount = Convert.ToDouble(textAmount.Text);
+				rec.EntryAccount = comboAccount.Text;
 				rec.Comments = textComments.Text;
-				rec.Cleared = checkCleared.Checked ? 1 : 0;
-				rec.Archived = checkArchived.Checked ? 1 : 0;
 				
-				CheckbookConfig config = CheckbookConfig.GetInstance();
-				rec.TransCategory = config.GetTransactionCategory(rec.TransType);
-
 				rec.Store(m_dbConnection);
+				
 				ListViewItem item = (ListViewItem)rec.Tag;
 
-				if("Check" == rec.TransType)
-				{
-					item.Text = rec.CheckNumber;
-				}
-				else
-				{
-					item.Text = rec.TransType;
-				}
-
+				item.SubItems[0].Text = rec.EntryDateString;
 				item.SubItems[1].Text = rec.Description;
-				item.SubItems[2].Text = rec.TransDateString;
+				item.SubItems[2].Text = rec.EntryAccount;
 
-				if("credit" == rec.TransCategory)
+				if("C" == rec.EntryType)
 				{
-					item.SubItems[3].Text = rec.Amount.ToString("C");
+					item.SubItems[3].Text = rec.EntryAmount.ToString("C");
 				}
 				else
 				{
-					item.SubItems[3].Text = string.Format("<{0:C}>", rec.Amount);
+					item.SubItems[3].Text = string.Format("<{0:C}>", rec.EntryAmount);
 				}
 
-				if(-1 == comboDescription.FindStringExact(rec.Description))
+				if (-1 == comboDescription.FindStringExact(rec.Description))
 				{
 					comboDescription.Items.Add(rec.Description);
 				}
-				
-				item.SubItems[4].Text = (1== rec.Cleared) ? "Yes" : "";
 
+				if(-1 == comboAccount.FindStringExact(rec.EntryAccount))
+				{
+					comboAccount.Items.Add(rec.EntryAccount);
+				}
+				
 				UpdateBalances();
 
 				Tag = null;
@@ -656,24 +609,22 @@ namespace Checkbook
 		{
             SaveRecord();
 
-			if(0 != listTransactions.SelectedItems.Count)
+			if(0 != listEntries.SelectedItems.Count)
 			{
-				ListViewItem item = listTransactions.SelectedItems[0];
+				ListViewItem item = listEntries.SelectedItems[0];
 				item.EnsureVisible();
 
-                CheckRegister rec = item.Tag as CheckRegister;
+                Ledger rec = item.Tag as Ledger;
 
                 if (rec != null)
                 {
                     Tag = rec;
 
-                    textDate.Text = rec.TransDateString;
-                    comboType.SelectedIndex = comboType.FindStringExact(rec.TransType);
-                    textCheckNumber.Text = rec.CheckNumber;
-                    comboDescription.SelectedIndex = comboDescription.FindStringExact(rec.Description);
-                    textAmount.Text = rec.Amount.ToString();
-                    checkCleared.Checked = (1 == rec.Cleared);
-					checkArchived.Checked = (1 == rec.Archived);
+					textDate.Text = rec.EntryDateString;
+					comboType.SelectedIndex = rec.EntryType == "C" ? comboType.FindStringExact("Credit") : comboType.FindStringExact("Debit");
+                    comboAccount.SelectedIndex = comboAccount.FindStringExact(rec.EntryAccount);
+					comboDescription.SelectedIndex = comboDescription.FindStringExact(rec.Description);
+					textAmount.Text = rec.EntryAmount.ToString();
                     textComments.Text = rec.Comments;
 
                     if (rec.IsNew)
@@ -682,7 +633,7 @@ namespace Checkbook
                     }
                     else
                     {
-                        m_statusBar.Panels[0].Text = string.Format("Record {0} of {1}", item.Index + 1, listTransactions.Items.Count);
+                        m_statusBar.Panels[0].Text = string.Format("Record {0} of {1}", item.Index + 1, listEntries.Items.Count);
                     }
                 }
 			}
@@ -691,12 +642,11 @@ namespace Checkbook
                 Tag = null;
 				textDate.Text = "1/1/0001";
 				comboType.SelectedIndex = -1;
-				textCheckNumber.Text = "";
-				comboDescription.Text = "";
+				comboAccount.Text = "";
+				comboAccount.SelectedIndex = -1;
 				comboDescription.SelectedIndex = -1;
+				comboDescription.Text = "";
 				textAmount.Text = "";
-				checkCleared.Checked = false;
-				checkArchived.Checked = false;
 				textComments.Text = "";
 			}
 		}
@@ -716,7 +666,9 @@ namespace Checkbook
 
 		private void comboDescription_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
 		{
-			if(0 == comboDescription.Text.Length)
+			ComboBox cb = sender as ComboBox;
+
+			if (0 == cb.Text.Length)
 			{
 				return;
 			}
@@ -736,26 +688,26 @@ namespace Checkbook
 				return;
 			}
 
-			int index = comboDescription.FindString(comboDescription.Text);
+			int index = cb.FindString(cb.Text);
 
 			if(-1 != index)
 			{
-				int len = comboDescription.Text.Length;
-				string found = comboDescription.Items[index].ToString().Substring(len);
-				comboDescription.Text += found;
-				comboDescription.SelectionStart = len;
-				comboDescription.SelectionLength = found.Length;
+				int len = cb.Text.Length;
+				string found = cb.Items[index].ToString().Substring(len);
+				cb.Text += found;
+				cb.SelectionStart = len;
+				cb.SelectionLength = found.Length;
 			}
 		}
 
 		private void menuContextDelete_Click(object sender, System.EventArgs e)
 		{
-			if(0 != listTransactions.SelectedItems.Count)
+			if(0 != listEntries.SelectedItems.Count)
 			{
-				ListViewItem item = listTransactions.SelectedItems[0];
-				listTransactions.Items.Remove(item);
+				ListViewItem item = listEntries.SelectedItems[0];
+				listEntries.Items.Remove(item);
 
-				CheckRegister rec = (CheckRegister)item.Tag;
+				Ledger rec = (Ledger)item.Tag;
 				
 				rec.DeleteRecord(m_dbConnection);
 

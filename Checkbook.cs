@@ -7,7 +7,6 @@ using System.Data;
 using System.Data.OleDb;
 using System.IO;
 using System.Text;
-using Microsoft.Win32;
 
 namespace Checkbook
 {
@@ -31,11 +30,6 @@ namespace Checkbook
 		private System.Windows.Forms.MenuItem menuCopy;
 		private System.Windows.Forms.MenuItem menuPaste;
         private System.Windows.Forms.MenuItem menuAbout;
-        private IContainer components;
-
-		private string m_connectString = "";
-		private OleDbConnection m_dbConnection;
-
 		private System.Windows.Forms.ContextMenu contextMenu;
 		private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.MenuItem menuContextProperties;
@@ -47,14 +41,25 @@ namespace Checkbook
 		private System.Windows.Forms.StatusBarPanel statusText;
 		private System.Windows.Forms.StatusBarPanel statusBalance;
 		private System.Windows.Forms.StatusBarPanel statusClearedBalance;
+		private System.Windows.Forms.StatusBarPanel statusFutureItems;
+        private IContainer components;
+
+		private string m_connectString = "";
+		private OleDbConnection m_dbConnection;
+
 		private AllAccountsSummary m_allAccountsSummary;
 		private SingleAccountSummary m_singleAccountSummary;
 		private CheckRegistry m_checkRegistry;
-		private System.Windows.Forms.StatusBarPanel statusFutureItems;
 		private CheckReconcile m_checkReconcile;
+		private BusinessSummary m_businessSummary;
+		private LedgerEntry m_ledgerEntry;
 		private MenuItem menuSelectDb;
 		private MenuItem menuArchive;
         private Hashtable m_accountRecs;
+		private MenuItem menuNewBusiness;
+		private MenuItem menuBusinessProperties;
+		private MenuItem menuItem1;
+		private Hashtable m_businessRecs;
 
         public Checkbook()
         {
@@ -64,6 +69,7 @@ namespace Checkbook
 			InitializeComponent();
 
             m_accountRecs = new Hashtable();
+			m_businessRecs = new Hashtable();
 
 			m_dbConnection = new OleDbConnection();
 
@@ -87,24 +93,35 @@ namespace Checkbook
 			m_checkReconcile.StatusBar = statusBar;
 			m_checkReconcile.DbConnection = m_dbConnection;
 
-			RegistryKey regKey = Registry.LocalMachine.CreateSubKey("SOFTWARE\\BeauJackson\\Checkbook");
+			m_businessSummary = new BusinessSummary();
+			m_businessSummary.MainWindow = this;
+			m_businessSummary.StatusBar = statusBar;
+			m_businessSummary.DbConnection = m_dbConnection;
 
-			m_connectString = regKey.GetValue("ConnectString", "").ToString();
+			m_ledgerEntry = new LedgerEntry();
+			m_ledgerEntry.MainWindow = this;
+			m_ledgerEntry.StatusBar = statusBar;
+			m_ledgerEntry.DbConnection = m_dbConnection;
 
-			if("" == m_connectString)
+			CheckbookConfig config = CheckbookConfig.GetInstance();
+
+			if (config.TestMode)
+			{
+				this.Text += " - TESTMODE";
+			}
+
+			m_connectString = config.ConnectString;
+
+			if(string.IsNullOrEmpty(m_connectString))
 			{
                 if (false == SelectDb())
                 {
-                    regKey.Close();
                     Close();
                 }
 			}
 
-			regKey.Close();
-
-			if("" != m_connectString)
+			if(string.IsNullOrEmpty(m_connectString) == false)
 			{
-
                 bool tryAgain = true;
 
                 while(tryAgain)
@@ -193,6 +210,9 @@ namespace Checkbook
 			this.panelMain = new System.Windows.Forms.Panel();
 			this.panelView = new System.Windows.Forms.Panel();
 			this.splitter = new System.Windows.Forms.Splitter();
+			this.menuNewBusiness = new System.Windows.Forms.MenuItem();
+			this.menuBusinessProperties = new System.Windows.Forms.MenuItem();
+			this.menuItem1 = new System.Windows.Forms.MenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.statusText)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.statusBalance)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.statusClearedBalance)).BeginInit();
@@ -305,6 +325,9 @@ namespace Checkbook
             this.menuProperties,
             this.menuImport,
             this.menuSep1,
+            this.menuNewBusiness,
+            this.menuBusinessProperties,
+            this.menuItem1,
             this.menuExit});
 			this.menuFile.Text = "&File";
 			this.menuFile.Popup += new System.EventHandler(this.menuFile_Popup);
@@ -318,19 +341,19 @@ namespace Checkbook
 			// menuNew
 			// 
 			this.menuNew.Index = 1;
-			this.menuNew.Text = "&New Account";
+			this.menuNew.Text = "&New Account...";
 			this.menuNew.Click += new System.EventHandler(this.menuNew_Click);
 			// 
 			// menuProperties
 			// 
 			this.menuProperties.Index = 2;
-			this.menuProperties.Text = "Account &Properties";
+			this.menuProperties.Text = "Account &Properties...";
 			this.menuProperties.Click += new System.EventHandler(this.menuProperties_Click);
 			// 
 			// menuImport
 			// 
 			this.menuImport.Index = 3;
-			this.menuImport.Text = "&Import Bank Transactions";
+			this.menuImport.Text = "&Import Bank Transactions...";
 			this.menuImport.Click += new System.EventHandler(this.menuImport_Click);
 			// 
 			// menuSep1
@@ -340,7 +363,7 @@ namespace Checkbook
 			// 
 			// menuExit
 			// 
-			this.menuExit.Index = 5;
+			this.menuExit.Index = 8;
 			this.menuExit.Text = "E&xit";
 			this.menuExit.Click += new System.EventHandler(this.menuExit_Click);
 			// 
@@ -420,6 +443,23 @@ namespace Checkbook
 			this.splitter.TabIndex = 1;
 			this.splitter.TabStop = false;
 			// 
+			// menuNewBusiness
+			// 
+			this.menuNewBusiness.Index = 5;
+			this.menuNewBusiness.Text = "New &Business...";
+			this.menuNewBusiness.Click += new System.EventHandler(this.menuNewBusiness_Click);
+			// 
+			// menuBusinessProperties
+			// 
+			this.menuBusinessProperties.Index = 6;
+			this.menuBusinessProperties.Text = "Business Proper&ties...";
+			this.menuBusinessProperties.Click += new System.EventHandler(this.menuBusinessProperties_Click);
+			// 
+			// menuItem1
+			// 
+			this.menuItem1.Index = 7;
+			this.menuItem1.Text = "-";
+			// 
 			// Checkbook
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -451,7 +491,6 @@ namespace Checkbook
             Checkbook cb = new Checkbook();
             cb.ImportTransactions(args);
             SingleInstance.SingleApplication.Run(cb);
-            //Application.Run(new Checkbook());
 		}
 
 		private void LoadCheckbook()
@@ -488,13 +527,38 @@ namespace Checkbook
 
 			dataReader.Close();
 
+			sql = "select * from businesses order by business_name";
+
+			selectCmd = new OleDbCommand(sql, m_dbConnection);
+			dataReader = selectCmd.ExecuteReader();
+
+			while (dataReader.Read())
+			{
+				Business rec = new Business();
+				rec.Load(dataReader);
+
+				m_businessRecs[rec.BusinessName] = rec;
+
+				TreeNode businessNode = treeManagement.Nodes.Add(rec.BusinessName);
+				businessNode.Tag = "business";
+
+				TreeNode node = businessNode.Nodes.Add("Ledger");
+				node.Tag = "ledger";
+
+				node = businessNode.Nodes.Add("Mileage");
+				node.Tag = "mileage";
+			}
+
+			dataReader.Close();
+
 			treeManagement.SelectedNode = summaryNode;
 		}
 
         private bool SelectDb()
         {
-            RegistryKey regKey = Registry.LocalMachine.CreateSubKey("SOFTWARE\\BeauJackson\\Checkbook");
-            string dbFile = regKey.GetValue("DB") as string;
+			CheckbookConfig config = CheckbookConfig.GetInstance();
+
+			string dbFile = config.DB;
 
             //"Provider=Microsoft.Jet.OLEDB.4.0; Data Source=c:\\src\\checkbook\\checkbookapp.mdb"
             openFileDialog.Filter = "Access Database files|*.mdb";
@@ -507,18 +571,50 @@ namespace Checkbook
             }
 
             if (DialogResult.OK == openFileDialog.ShowDialog(this))
-            {
-                
+            {                
                 m_connectString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0; Data Source={0}", openFileDialog.FileName);
-                regKey.SetValue("ConnectString", m_connectString);
-                regKey.SetValue("DB", openFileDialog.FileName);
-                regKey.Close();
+				config.ConnectString = m_connectString;
+				config.DB = openFileDialog.FileName;
+
+				config.Save();
                 
                 return true;
             }
 
             return false;
         }
+
+		private void menuNewBusiness_Click(object sender, EventArgs e)
+		{
+			/*!
+			Business rec = new Business();
+			AccountProperties dlg = new AccountProperties(rec);
+
+			if (DialogResult.OK == dlg.ShowDialog(this))
+			{
+				rec.Store(m_dbConnection);
+
+				m_accountRecs[rec.BusinessName] = rec;
+
+				TreeNode businessNode = treeManagement.Nodes.Add(rec.BusinessName);
+				businessNode.Tag = "business";
+
+				TreeNode node = businessNode.Nodes.Add("Income");
+				node.Tag = "income";
+
+				node = businessNode.Nodes.Add("Expenses");
+				node.Tag = "expenses";
+
+				node = businessNode.Nodes.Add("Mileage");
+				node.Tag = "mileage";
+			}
+			*/
+		}
+
+		private void menuBusinessProperties_Click(object sender, EventArgs e)
+		{
+
+		}
 
 		private void menuNew_Click(object sender, System.EventArgs e)
 		{
@@ -588,8 +684,11 @@ namespace Checkbook
 		{
 			while(panelView.Controls.Count > 0)
 			{
-				CheckbookControl c = (CheckbookControl)panelView.Controls[0];
-                c.SaveCurrentRecord();
+				CheckbookControl c = panelView.Controls[0] as CheckbookControl;
+                if(c != null) c.SaveCurrentRecord();
+
+				BusinessControl b = panelView.Controls[0] as BusinessControl;
+				if (b != null) b.SaveCurrentRecord();
 
 				panelView.Controls.RemoveAt(0);
 			}
@@ -603,7 +702,7 @@ namespace Checkbook
 
 			string nodeType = treeManagement.SelectedNode.Tag.ToString();
 
-			switch(nodeType)
+			switch (nodeType)
 			{
 				case "all_summary":	//summary node			
 					m_allAccountsSummary.LoadSummaries();
@@ -613,41 +712,70 @@ namespace Checkbook
 
 				case "archived":
 				case "registry":	//registry node
-				{
-                    Account rec = m_accountRecs[treeManagement.SelectedNode.Parent.Tag] as Account;
-					string accountId = rec.Id;
+					{
+						Account rec = m_accountRecs[treeManagement.SelectedNode.Parent.Tag] as Account;
+						string accountId = rec.Id;
 
-					m_checkRegistry.LoadCheckRegistry(accountId, (nodeType == "archived"));
+						m_checkRegistry.LoadCheckRegistry(accountId, (nodeType == "archived"));
 
-					panelView.Controls.Add(m_checkRegistry);
-					m_checkRegistry.Dock = DockStyle.Fill;
-					m_checkRegistry.SetDefaultButton();
-				}
+						panelView.Controls.Add(m_checkRegistry);
+						m_checkRegistry.Dock = DockStyle.Fill;
+						m_checkRegistry.SetDefaultButton();
+					}
 					break;
 
 				case "reconcile":	//reconcile node
-				{
-                    Account rec = m_accountRecs[treeManagement.SelectedNode.Parent.Tag] as Account;
-                    string accountId = rec.Id;
+					{
+						Account rec = m_accountRecs[treeManagement.SelectedNode.Parent.Tag] as Account;
+						string accountId = rec.Id;
 
-					m_checkReconcile.LoadCheckReconcile(accountId);
+						m_checkReconcile.LoadCheckReconcile(accountId);
 
-					panelView.Controls.Add(m_checkReconcile);
-					m_checkReconcile.Dock = DockStyle.Fill;
-					m_checkReconcile.SetDefaultButton();
-				}
+						panelView.Controls.Add(m_checkReconcile);
+						m_checkReconcile.Dock = DockStyle.Fill;
+						m_checkReconcile.SetDefaultButton();
+					}
+					break;
+
+				case "business":
+					{
+						Business rec = m_businessRecs[treeManagement.SelectedNode.Text] as Business;
+						m_businessSummary.LoadSummary(rec.Id);
+						panelView.Controls.Add(m_businessSummary);
+						m_businessSummary.Dock = DockStyle.Fill;
+						m_businessSummary.SetDefaultButton();
+					}
+					break;
+
+				case "ledger":
+					{
+						Business rec = m_businessRecs[treeManagement.SelectedNode.Parent.Text] as Business;
+						int businessId = rec.Id;
+
+						m_ledgerEntry.LoadLedgerEntry(businessId);
+
+						panelView.Controls.Add(m_ledgerEntry);
+						m_ledgerEntry.Dock = DockStyle.Fill;
+						m_ledgerEntry.SetDefaultButton();
+					}
+					break;
+
+				case "mileage":
+					{
+						Business rec = m_businessRecs[treeManagement.SelectedNode.Parent.Text] as Business;
+					}
 					break;
 
 				default:	//account node
-				{
-					Account rec = m_accountRecs[treeManagement.SelectedNode.Tag] as Account;
-					string accountId = rec.Id;
+					{
+						Account rec = m_accountRecs[treeManagement.SelectedNode.Tag] as Account;
+						string accountId = rec.Id;
 
-					m_singleAccountSummary.LoadSummary(accountId);
+						m_singleAccountSummary.LoadSummary(accountId);
 
-					panelView.Controls.Add(m_singleAccountSummary);
-					m_singleAccountSummary.Dock = DockStyle.Fill;
-				}
+						panelView.Controls.Add(m_singleAccountSummary);
+						m_singleAccountSummary.Dock = DockStyle.Fill;
+					}
 					break;
 			}
 		}
@@ -725,24 +853,24 @@ namespace Checkbook
 
         private void ImportTransactions()
         {
-            RegistryKey regKey = Registry.LocalMachine.CreateSubKey("SOFTWARE\\BeauJackson\\Checkbook\\CheckbookData");
-            string dataFolder = regKey.GetValue("StartFolder") as string;
+			CheckbookConfig config = CheckbookConfig.GetInstance();
 
-            if(dataFolder != null) openFileDialog.InitialDirectory = dataFolder;
+			string dataFolder = config.StartFolder;
+
+            if(string.IsNullOrEmpty(dataFolder) == false) openFileDialog.InitialDirectory = dataFolder;
 
             openFileDialog.Filter = "OFX files|*.ofx";
             openFileDialog.Title = "Select transaction file to import";
 
             if (DialogResult.Cancel == openFileDialog.ShowDialog(this))
             {
-                regKey.Close();
                 return;
             }
 
             dataFolder = openFileDialog.FileName.Substring(0, openFileDialog.FileName.LastIndexOf("\\"));
 
-            regKey.SetValue("StartFolder", dataFolder);
-            regKey.Close();
+            config.StartFolder = dataFolder;
+			config.Save();
 
             ImportTransactions(openFileDialog.FileName);
         }
@@ -1061,6 +1189,5 @@ namespace Checkbook
         {
             SelectDb();
         }
-
 	}
 }

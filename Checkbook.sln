@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Checkbook", "Checkbook.csproj", "{93738450-50FB-4BDD-9FCB-05B1FED45A12}"
 EndProject
 Global

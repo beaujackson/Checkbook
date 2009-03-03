@@ -58,6 +58,11 @@ namespace Checkbook
 			// This call is required by the Windows.Forms Form Designer.
 			InitializeComponent();
 
+			CheckbookConfig config = CheckbookConfig.GetInstance();
+
+			comboType.Items.AddRange(config.DebitTypes);
+			comboType.Items.AddRange(config.CreditTypes);
+
 			m_registerRecs = new ArrayList();
 		}
 
@@ -356,24 +361,10 @@ namespace Checkbook
 			// comboType
 			// 
 			this.comboType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboType.Items.AddRange(new object[] {
-            "ATM",
-            "Archive",
-            "Check",
-            "Correction Credit",
-            "Correction Debit",
-            "Debit Card",
-            "Deposit",
-            "E-pay",
-            "Fee",
-            "Transfer In",
-            "Transfer Out",
-            "Withdrawal",
-            "Other Debit",
-            "Other Credit"});
 			this.comboType.Location = new System.Drawing.Point(208, 4);
 			this.comboType.Name = "comboType";
 			this.comboType.Size = new System.Drawing.Size(80, 21);
+			this.comboType.Sorted = true;
 			this.comboType.TabIndex = 23;
 			// 
 			// btnNext
@@ -604,36 +595,13 @@ namespace Checkbook
 				amount = amount.Replace("$", "");
 
 				textDate.Text = transDate;
-				
-				switch(transType.ToLower())
+
+				CheckbookConfig config = CheckbookConfig.GetInstance();
+				comboType.Text = config.GetReconileType(transType.ToLower());
+
+				if (transType.ToLower() == "check")
 				{
-					case "fee":
-						comboType.Text = "Fee";
-						break;
-
-					case "directdebit":
-					case "debit":
-					case "pos":
-						comboType.Text = "Debit Card";
-						break;
-
-					case "check":
-						comboType.Text = "Check";
-						textCheckNumber.Text = checkNumber;
-						break;
-
-					case "atm":
-						comboType.Text = "ATM";
-						break;
-
-					case "directdep":
-					case "credit":
-						comboType.Text = "Deposit";
-						break;
-
-					case "payment":
-						comboType.Text = "E-pay";
-						break;
+					textCheckNumber.Text = checkNumber;
 				}
 
 				comboDescription.Text = description;
@@ -760,28 +728,8 @@ namespace Checkbook
 
 				rec.Amount = Convert.ToDouble(textAmount.Text);
 
-				switch(rec.TransType)
-				{
-					case "ATM":
-					case "Archive":
-					case "Check":
-					case "Debit Card":
-					case "E-pay":
-					case "Fee":
-					case "Withdrawal":
-					case "Transfer Out":
-					case "Other Debit":
-					case "Correction Debit":
-						rec.TransCategory = "debit";
-						break;
-
-					case "Deposit":
-					case "Transfer In":
-					case "Other Credit":
-					case "Correction Credit":
-						rec.TransCategory = "credit";
-						break;
-				}
+				CheckbookConfig config = CheckbookConfig.GetInstance();
+				rec.TransCategory = config.GetTransactionCategory(rec.TransType);
 
 				rec.Store(m_dbConnection);
 
