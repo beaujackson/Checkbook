@@ -161,6 +161,9 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Business.cs" />
+    <Compile Include="BusinessProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Ledger.cs" />
     <Compile Include="LedgerEntry.cs">
       <SubType>UserControl</SubType>
@@ -217,6 +220,10 @@
       <DependentUpon>BusinessControl.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="BusinessProperties.resx">
+      <DependentUpon>BusinessProperties.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="LedgerEntry.resx">
       <DependentUpon>LedgerEntry.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -227,9 +234,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <Content Include="App.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Checkbook.config" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -257,6 +261,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Checkbook.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

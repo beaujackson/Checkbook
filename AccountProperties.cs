@@ -191,7 +191,7 @@ namespace Checkbook
 
 		private void btnOk_Click(object sender, System.EventArgs e)
 		{
-			if("" == textAccountName.Text)
+			if ("" == textAccountName.Text)
 			{
 				MessageBox.Show(this, "You must provide a name for the account!", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;

@@ -11,11 +11,11 @@ namespace Checkbook
 	public class Business : BaseRecord
 	{
 		public Business()
-			: base("businesss")
+			: base("businesses")
 		{
 			Fields = new DBField[]
 			{
-				new DBField("id", FieldType.Text, true, false),
+				new DBField("id", FieldType.Numeric, true, false),
 				new DBField("business_name", FieldType.Text, false, false),
 				new DBField("taxid_number", FieldType.Text, false, false),
 				new DBField("comments", FieldType.Text, false, false),
@@ -27,7 +27,7 @@ namespace Checkbook
 			if (false == CanUpdate)
 			{
 				string sql = GetInsertSql();
-				AddRecord(sql, writeConnection);
+				Id = AddRecordWithIntId(sql, writeConnection);
 			}
 			else
 			{

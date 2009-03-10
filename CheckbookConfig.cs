@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Collections;
+using System.Reflection;
 
 namespace Checkbook
 {
@@ -16,8 +17,11 @@ namespace Checkbook
 
 		private CheckbookConfig()
 		{
+			Assembly a = Assembly.GetExecutingAssembly();
+			string path = a.Location.Replace("Checkbook.exe", "Checkbook.config");
+			
 			_configDoc = new XmlDocument();
-			_configDoc.Load("Checkbook.config");
+			_configDoc.Load(path);
 		}
 
 		public static CheckbookConfig GetInstance()
@@ -41,12 +45,12 @@ namespace Checkbook
 		{
 			get
 			{
-				XmlElement elem = _configDoc.DocumentElement.SelectSingleNode("Database/add[@key='TestMode']") as XmlElement;
+				XmlElement elem = _configDoc.DocumentElement.SelectSingleNode("appSettings/Database/add[@key='TestMode']") as XmlElement;
 				return (elem.GetAttribute("value") == "1");
 			}
 			set
 			{
-				XmlElement elem = _configDoc.DocumentElement.SelectSingleNode("Database/add[@key='TestMode']") as XmlElement;
+				XmlElement elem = _configDoc.DocumentElement.SelectSingleNode("appSettings/Database/add[@key='TestMode']") as XmlElement;
 				
 				string val = value ? "1" : "0";
 
@@ -62,11 +66,11 @@ namespace Checkbook
 
 				if (TestMode)
 				{
-					elem = _configDoc.DocumentElement.SelectSingleNode("Database/add[@key='TestModeConnectString']") as XmlElement;
+					elem = _configDoc.DocumentElement.SelectSingleNode("appSettings/Database/add[@key='TestModeConnectString']") as XmlElement;
 				}
 				else
 				{
-					elem = _configDoc.DocumentElement.SelectSingleNode("Database/add[@key='ConnectString']") as XmlElement;
+					elem = _configDoc.DocumentElement.SelectSingleNode("appSettings/Database/add[@key='ConnectString']") as XmlElement;
 				}
 
 				return elem.GetAttribute("value");
@@ -78,11 +82,11 @@ namespace Checkbook
 
 				if (TestMode)
 				{
-					elem = _configDoc.DocumentElement.SelectSingleNode("Database/add[@key='TestModeConnectString']") as XmlElement;
+					elem = _configDoc.DocumentElement.SelectSingleNode("appSettings/Database/add[@key='TestModeConnectString']") as XmlElement;
 				}
 				else
 				{
-					elem = _configDoc.DocumentElement.SelectSingleNode("Database/add[@key='ConnectString']") as XmlElement;
+					elem = _configDoc.DocumentElement.SelectSingleNode("appSettings/Database/add[@key='ConnectString']") as XmlElement;
 				}
 
 				elem.SetAttribute("value", value);
@@ -97,11 +101,11 @@ namespace Checkbook
 
 				if (TestMode)
 				{
-					elem = _configDoc.DocumentElement.SelectSingleNode("Database/add[@key='TestModeDB']") as XmlElement;
+					elem = _configDoc.DocumentElement.SelectSingleNode("appSettings/Database/add[@key='TestModeDB']") as XmlElement;
 				}
 				else
 				{
-					elem = _configDoc.DocumentElement.SelectSingleNode("Database/add[@key='DB']") as XmlElement;
+					elem = _configDoc.DocumentElement.SelectSingleNode("appSettings/Database/add[@key='DB']") as XmlElement;
 				}
 
 				return elem.GetAttribute("value");
@@ -113,11 +117,11 @@ namespace Checkbook
 
 				if (TestMode)
 				{
-					elem = _configDoc.DocumentElement.SelectSingleNode("Database/add[@key='TestModeDB']") as XmlElement;
+					elem = _configDoc.DocumentElement.SelectSingleNode("appSettings/Database/add[@key='TestModeDB']") as XmlElement;
 				}
 				else
 				{
-					elem = _configDoc.DocumentElement.SelectSingleNode("Database/add[@key='DB']") as XmlElement;
+					elem = _configDoc.DocumentElement.SelectSingleNode("appSettings/Database/add[@key='DB']") as XmlElement;
 				}
 
 				elem.SetAttribute("value", value);
@@ -132,13 +136,13 @@ namespace Checkbook
 		{
 			get
 			{
-				XmlElement elem = _configDoc.DocumentElement.SelectSingleNode("Data/add[@key='StartFolder']") as XmlElement;
+				XmlElement elem = _configDoc.DocumentElement.SelectSingleNode("appSettings/Data/add[@key='StartFolder']") as XmlElement;
 				return elem.GetAttribute("value");
 			}
 
 			set
 			{
-				XmlElement elem = _configDoc.DocumentElement.SelectSingleNode("Data/add[@key='StartFolder']") as XmlElement;
+				XmlElement elem = _configDoc.DocumentElement.SelectSingleNode("appSettings/Data/add[@key='StartFolder']") as XmlElement;
 				elem.SetAttribute("value", value);
 			}
 		}
@@ -174,7 +178,7 @@ namespace Checkbook
 		{
 			get
 			{
-				XmlElement elem = _configDoc.DocumentElement.SelectSingleNode("TransactionTypes/add[@key='DebitTypes']") as XmlElement;
+				XmlElement elem = _configDoc.DocumentElement.SelectSingleNode("appSettings/TransactionTypes/add[@key='DebitTypes']") as XmlElement;
 				return elem.GetAttribute("value").Split(new char[] {'|'});
 			}
 		}
@@ -183,7 +187,7 @@ namespace Checkbook
 		{
 			get
 			{
-				XmlElement elem = _configDoc.DocumentElement.SelectSingleNode("TransactionTypes/add[@key='CreditTypes']") as XmlElement;
+				XmlElement elem = _configDoc.DocumentElement.SelectSingleNode("appSettings/TransactionTypes/add[@key='CreditTypes']") as XmlElement;
 				return elem.GetAttribute("value").Split(new char[] { '|' });
 			}
 		}
@@ -194,7 +198,7 @@ namespace Checkbook
 
 		public string GetReconileType(string reconcileType)
 		{
-			string xpath = string.Format("ReconcileTypes/add[@key='{0}']", reconcileType);
+			string xpath = string.Format("appSettings/ReconcileTypes/add[@key='{0}']", reconcileType);
 			XmlElement elem = _configDoc.DocumentElement.SelectSingleNode(xpath) as XmlElement;
 			return elem.GetAttribute("value");
 		}

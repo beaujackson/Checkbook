@@ -59,6 +59,11 @@ namespace Checkbook
 		private MenuItem menuNewBusiness;
 		private MenuItem menuBusinessProperties;
 		private MenuItem menuItem1;
+		private MenuItem menuUseTestMode;
+		private MenuItem menuItem2;
+		private MenuItem menuItem3;
+		private MenuItem menuContextBusinessProperties;
+		private MenuItem menuContextDeleteBusiness;
 		private Hashtable m_businessRecs;
 
         public Checkbook()
@@ -67,6 +72,22 @@ namespace Checkbook
 			// Required for Windows Form Designer support
 			//
 			InitializeComponent();
+
+			Init();
+		}
+
+		private void Init()
+		{
+			while (panelView.Controls.Count > 0)
+			{
+				CheckbookControl c = panelView.Controls[0] as CheckbookControl;
+				if (c != null) c.SaveCurrentRecord();
+
+				BusinessControl b = panelView.Controls[0] as BusinessControl;
+				if (b != null) b.SaveCurrentRecord();
+
+				panelView.Controls.RemoveAt(0);
+			}
 
             m_accountRecs = new Hashtable();
 			m_businessRecs = new Hashtable();
@@ -104,10 +125,15 @@ namespace Checkbook
 			m_ledgerEntry.DbConnection = m_dbConnection;
 
 			CheckbookConfig config = CheckbookConfig.GetInstance();
-
+			menuUseTestMode.Checked = config.TestMode;
+			
 			if (config.TestMode)
 			{
-				this.Text += " - TESTMODE";
+				this.Text = "Checkbook - TESTMODE";
+			}
+			else
+			{
+				this.Text = "Checkbook";
 			}
 
 			m_connectString = config.ConnectString;
@@ -130,14 +156,23 @@ namespace Checkbook
                     {
 				        m_dbConnection.ConnectionString = m_connectString;
                         m_dbConnection.Open();
-                        
                         tryAgain = false;
                     }
                     catch(Exception ex)
                     {
-                        MessageBox.Show(this, ex.Message, "Error connecting to database!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						StringBuilder sb = new StringBuilder();
+						sb.AppendLine(ex.Message);
 
-                        if(ConnectionState.Open == m_dbConnection.State)
+						Exception ex1 = ex.InnerException;
+						while (ex1 != null)
+						{
+							sb.AppendLine(ex1.Message);
+							ex1 = ex1.InnerException;
+						}
+
+						MessageBox.Show(this, sb.ToString(), "Error connecting to database!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						
+						if (ConnectionState.Open == m_dbConnection.State)
                         {
                             m_dbConnection.Close();
                         }
@@ -195,6 +230,7 @@ namespace Checkbook
 			this.mainMenu = new System.Windows.Forms.MainMenu(this.components);
 			this.menuFile = new System.Windows.Forms.MenuItem();
 			this.menuSelectDb = new System.Windows.Forms.MenuItem();
+			this.menuUseTestMode = new System.Windows.Forms.MenuItem();
 			this.menuNew = new System.Windows.Forms.MenuItem();
 			this.menuProperties = new System.Windows.Forms.MenuItem();
 			this.menuImport = new System.Windows.Forms.MenuItem();
@@ -213,6 +249,10 @@ namespace Checkbook
 			this.panelMain = new System.Windows.Forms.Panel();
 			this.panelView = new System.Windows.Forms.Panel();
 			this.splitter = new System.Windows.Forms.Splitter();
+			this.menuItem2 = new System.Windows.Forms.MenuItem();
+			this.menuItem3 = new System.Windows.Forms.MenuItem();
+			this.menuContextBusinessProperties = new System.Windows.Forms.MenuItem();
+			this.menuContextDeleteBusiness = new System.Windows.Forms.MenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.statusText)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.statusBalance)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.statusClearedBalance)).BeginInit();
@@ -288,14 +328,17 @@ namespace Checkbook
 			this.contextMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuContextProperties,
             this.menuContextDelete,
-            this.menuArchive});
+            this.menuArchive,
+            this.menuItem3,
+            this.menuContextBusinessProperties,
+            this.menuContextDeleteBusiness});
 			this.contextMenu.Popup += new System.EventHandler(this.contextMenu_Popup);
 			// 
 			// menuContextProperties
 			// 
 			this.menuContextProperties.Index = 0;
 			this.menuContextProperties.Text = "Account &Properties...";
-			this.menuContextProperties.Click += new System.EventHandler(this.menuContextProperties_Click);
+			this.menuContextProperties.Click += new System.EventHandler(this.menuProperties_Click);
 			// 
 			// menuContextDelete
 			// 
@@ -321,6 +364,8 @@ namespace Checkbook
 			this.menuFile.Index = 0;
 			this.menuFile.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuSelectDb,
+            this.menuUseTestMode,
+            this.menuItem2,
             this.menuNew,
             this.menuProperties,
             this.menuImport,
@@ -338,49 +383,55 @@ namespace Checkbook
 			this.menuSelectDb.Text = "&Select Database...";
 			this.menuSelectDb.Click += new System.EventHandler(this.menuSelectDb_Click);
 			// 
+			// menuUseTestMode
+			// 
+			this.menuUseTestMode.Index = 1;
+			this.menuUseTestMode.Text = "&Use Test Mode";
+			this.menuUseTestMode.Click += new System.EventHandler(this.menuUseTestMode_Click);
+			// 
 			// menuNew
 			// 
-			this.menuNew.Index = 1;
+			this.menuNew.Index = 3;
 			this.menuNew.Text = "&New Account...";
 			this.menuNew.Click += new System.EventHandler(this.menuNew_Click);
 			// 
 			// menuProperties
 			// 
-			this.menuProperties.Index = 2;
+			this.menuProperties.Index = 4;
 			this.menuProperties.Text = "Account &Properties...";
 			this.menuProperties.Click += new System.EventHandler(this.menuProperties_Click);
 			// 
 			// menuImport
 			// 
-			this.menuImport.Index = 3;
+			this.menuImport.Index = 5;
 			this.menuImport.Text = "&Import Bank Transactions...";
 			this.menuImport.Click += new System.EventHandler(this.menuImport_Click);
 			// 
 			// menuSep1
 			// 
-			this.menuSep1.Index = 4;
+			this.menuSep1.Index = 6;
 			this.menuSep1.Text = "-";
 			// 
 			// menuNewBusiness
 			// 
-			this.menuNewBusiness.Index = 5;
+			this.menuNewBusiness.Index = 7;
 			this.menuNewBusiness.Text = "New &Business...";
 			this.menuNewBusiness.Click += new System.EventHandler(this.menuNewBusiness_Click);
 			// 
 			// menuBusinessProperties
 			// 
-			this.menuBusinessProperties.Index = 6;
+			this.menuBusinessProperties.Index = 8;
 			this.menuBusinessProperties.Text = "Business Proper&ties...";
 			this.menuBusinessProperties.Click += new System.EventHandler(this.menuBusinessProperties_Click);
 			// 
 			// menuItem1
 			// 
-			this.menuItem1.Index = 7;
+			this.menuItem1.Index = 9;
 			this.menuItem1.Text = "-";
 			// 
 			// menuExit
 			// 
-			this.menuExit.Index = 8;
+			this.menuExit.Index = 10;
 			this.menuExit.Text = "E&xit";
 			this.menuExit.Click += new System.EventHandler(this.menuExit_Click);
 			// 
@@ -459,6 +510,28 @@ namespace Checkbook
 			this.splitter.Size = new System.Drawing.Size(4, 347);
 			this.splitter.TabIndex = 1;
 			this.splitter.TabStop = false;
+			// 
+			// menuItem2
+			// 
+			this.menuItem2.Index = 2;
+			this.menuItem2.Text = "-";
+			// 
+			// menuItem3
+			// 
+			this.menuItem3.Index = 3;
+			this.menuItem3.Text = "-";
+			// 
+			// menuContextBusinessProperties
+			// 
+			this.menuContextBusinessProperties.Index = 4;
+			this.menuContextBusinessProperties.Text = "&Business Properties...";
+			this.menuContextBusinessProperties.Click += new System.EventHandler(this.menuBusinessProperties_Click);
+			// 
+			// menuContextDeleteBusiness
+			// 
+			this.menuContextDeleteBusiness.Index = 5;
+			this.menuContextDeleteBusiness.Text = "D&elete Business";
+			this.menuContextDeleteBusiness.Click += new System.EventHandler(this.menuContextDeleteBusiness_Click);
 			// 
 			// Checkbook
 			// 
@@ -586,34 +659,43 @@ namespace Checkbook
 
 		private void menuNewBusiness_Click(object sender, EventArgs e)
 		{
-			/*!
 			Business rec = new Business();
-			AccountProperties dlg = new AccountProperties(rec);
+			BusinessProperties dlg = new BusinessProperties(rec);
 
 			if (DialogResult.OK == dlg.ShowDialog(this))
 			{
 				rec.Store(m_dbConnection);
 
-				m_accountRecs[rec.BusinessName] = rec;
+				m_businessRecs[rec.BusinessName] = rec;
 
 				TreeNode businessNode = treeManagement.Nodes.Add(rec.BusinessName);
 				businessNode.Tag = "business";
 
-				TreeNode node = businessNode.Nodes.Add("Income");
-				node.Tag = "income";
-
-				node = businessNode.Nodes.Add("Expenses");
-				node.Tag = "expenses";
+				TreeNode node = businessNode.Nodes.Add("Ledger");
+				node.Tag = "ledger";
 
 				node = businessNode.Nodes.Add("Mileage");
 				node.Tag = "mileage";
 			}
-			*/
 		}
 
 		private void menuBusinessProperties_Click(object sender, EventArgs e)
 		{
+			Business rec = m_businessRecs[treeManagement.SelectedNode.Text] as Business;
 
+			BusinessProperties dlg = new BusinessProperties(rec);
+
+			if (DialogResult.OK == dlg.ShowDialog(this))
+			{
+				rec.Store(m_dbConnection);
+
+				if (rec.BusinessName != treeManagement.SelectedNode.Text)
+				{
+					m_businessRecs.Remove(treeManagement.SelectedNode.Text);
+					treeManagement.SelectedNode.Text = rec.BusinessName;
+					m_businessRecs[treeManagement.SelectedNode.Text] = rec;
+				}
+			}
 		}
 
 		private void menuNew_Click(object sender, System.EventArgs e)
@@ -657,7 +739,7 @@ namespace Checkbook
 
 		private void menuContextDelete_Click(object sender, System.EventArgs e)
 		{
-			string msg = "This action will delete this account, and all of its associated registry entries and bank transactions.  You will not be able to undo this action.  Are you sure you want to delete this account?";
+			string msg = "This action will delete this account, and all of its associated bank transactions.  You will not be able to undo this action.  Are you sure you want to delete this account?";
 			
 			if(DialogResult.Yes == MessageBox.Show(this, msg, "Delete Account?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
 			{
@@ -788,23 +870,13 @@ namespace Checkbook
 			}				
 		}
 
-		private void menuContextProperties_Click(object sender, System.EventArgs e)
-		{
-			ShowProperties();
-		}
-
 		private void menuProperties_Click(object sender, System.EventArgs e)
 		{
-			ShowProperties();
-		}
-
-		private void ShowProperties()
-		{
-            Account rec = m_accountRecs[treeManagement.SelectedNode.Tag] as Account;
+			Account rec = m_accountRecs[treeManagement.SelectedNode.Tag] as Account;
 
 			AccountProperties dlg = new AccountProperties(rec);
 
-			if(DialogResult.OK == dlg.ShowDialog(this))
+			if (DialogResult.OK == dlg.ShowDialog(this))
 			{
 				rec.Store(m_dbConnection);
 				treeManagement.SelectedNode.Text = rec.AccountName;
@@ -827,23 +899,30 @@ namespace Checkbook
 
 		private void menuFile_Popup(object sender, System.EventArgs e)
 		{
-			bool enable = false;
+			bool enableAccountProps = false;
+			bool enableBusinessProps = false;
 
 			if(null != treeManagement.SelectedNode)
 			{
-                enable = (null != m_accountRecs[treeManagement.SelectedNode.Tag]);
+				enableAccountProps = (null != m_accountRecs[treeManagement.SelectedNode.Tag]);
+				enableBusinessProps = (treeManagement.SelectedNode.Tag.ToString() == "business");
 			}
 
-			menuProperties.Enabled = enable;
+			menuProperties.Enabled = enableAccountProps;
+			menuBusinessProperties.Enabled = enableBusinessProps;
 		}
 
 		private void contextMenu_Popup(object sender, System.EventArgs e)
 		{
-            bool enable = (null != m_accountRecs[treeManagement.SelectedNode.Tag]);
+            bool enableAccounts = (null != m_accountRecs[treeManagement.SelectedNode.Tag]);
 
-			menuContextProperties.Enabled = enable;
-			menuContextDelete.Enabled = enable;
-			menuArchive.Enabled = enable;
+			menuContextProperties.Enabled = enableAccounts;
+			menuContextDelete.Enabled = enableAccounts;
+			menuArchive.Enabled = enableAccounts;
+
+			bool enableBusinesses = (treeManagement.SelectedNode.Tag.ToString() == "business");
+			menuContextBusinessProperties.Enabled = enableBusinesses;
+			menuContextDeleteBusiness.Enabled = enableBusinesses;
 		}
 
 		private void menuImport_Click(object sender, System.EventArgs e)
@@ -1189,5 +1268,33 @@ namespace Checkbook
         {
             SelectDb();
         }
+
+		private void menuUseTestMode_Click(object sender, EventArgs e)
+		{
+			CheckbookConfig config = CheckbookConfig.GetInstance();
+			config.TestMode = !config.TestMode;
+			config.Save();
+
+			Init();
+		}
+
+		private void menuContextDeleteBusiness_Click(object sender, EventArgs e)
+		{
+			string msg = "This action will delete this business, and all of its associated ledger entries.  You will not be able to undo this action.  Are you sure you want to delete this business?";
+
+			if (DialogResult.Yes == MessageBox.Show(this, msg, "Delete Business?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
+			{
+				Business rec = m_businessRecs[treeManagement.SelectedNode.Text] as Business;
+
+				string sql = string.Format("delete from businesses where id = {0}", rec.Id);
+
+				OleDbCommand delCmd = new OleDbCommand(sql, m_dbConnection);
+
+				delCmd.ExecuteNonQuery();
+
+				treeManagement.Nodes.Remove(treeManagement.SelectedNode);
+				treeManagement.SelectedNode = treeManagement.Nodes[0];
+			}
+		}
 	}
 }

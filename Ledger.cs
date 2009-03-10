@@ -30,7 +30,7 @@ namespace Checkbook
 			if(false == CanUpdate)
 			{
 				string sql = GetInsertSql();
-				AddRecord(sql, writeConnection);
+				Id = AddRecordWithIntId(sql, writeConnection);
 			}
 			else
 			{
