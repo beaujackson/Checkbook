@@ -258,7 +258,7 @@ namespace Checkbook
 			// 
 			this.comboDescription.Location = new System.Drawing.Point(72, 36);
 			this.comboDescription.Name = "comboDescription";
-			this.comboDescription.Size = new System.Drawing.Size(216, 21);
+			this.comboDescription.Size = new System.Drawing.Size(290, 21);
 			this.comboDescription.TabIndex = 27;
 			this.comboDescription.KeyUp += new System.Windows.Forms.KeyEventHandler(this.comboDescription_KeyUp);
 			// 
@@ -273,7 +273,7 @@ namespace Checkbook
 			// 
 			// label3
 			// 
-			this.label3.Location = new System.Drawing.Point(296, 4);
+			this.label3.Location = new System.Drawing.Point(368, 4);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(48, 20);
 			this.label3.TabIndex = 24;
@@ -300,7 +300,7 @@ namespace Checkbook
 			// 
 			// label5
 			// 
-			this.label5.Location = new System.Drawing.Point(296, 36);
+			this.label5.Location = new System.Drawing.Point(368, 37);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(48, 20);
 			this.label5.TabIndex = 28;
@@ -318,7 +318,7 @@ namespace Checkbook
 			// 
 			// checkCleared
 			// 
-			this.checkCleared.Location = new System.Drawing.Point(416, 36);
+			this.checkCleared.Location = new System.Drawing.Point(344, 65);
 			this.checkCleared.Name = "checkCleared";
 			this.checkCleared.Size = new System.Drawing.Size(64, 20);
 			this.checkCleared.TabIndex = 30;
@@ -344,7 +344,7 @@ namespace Checkbook
 			// 
 			// textAmount
 			// 
-			this.textAmount.Location = new System.Drawing.Point(344, 36);
+			this.textAmount.Location = new System.Drawing.Point(416, 37);
 			this.textAmount.Name = "textAmount";
 			this.textAmount.Size = new System.Drawing.Size(64, 20);
 			this.textAmount.TabIndex = 29;
@@ -352,7 +352,7 @@ namespace Checkbook
 			// 
 			// textCheckNumber
 			// 
-			this.textCheckNumber.Location = new System.Drawing.Point(344, 4);
+			this.textCheckNumber.Location = new System.Drawing.Point(416, 4);
 			this.textCheckNumber.MaxLength = 50;
 			this.textCheckNumber.Name = "textCheckNumber";
 			this.textCheckNumber.Size = new System.Drawing.Size(64, 20);
@@ -363,7 +363,7 @@ namespace Checkbook
 			this.comboType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboType.Location = new System.Drawing.Point(208, 4);
 			this.comboType.Name = "comboType";
-			this.comboType.Size = new System.Drawing.Size(80, 21);
+			this.comboType.Size = new System.Drawing.Size(154, 21);
 			this.comboType.Sorted = true;
 			this.comboType.TabIndex = 23;
 			// 

@@ -14,14 +14,15 @@ namespace Checkbook
 
 		private XmlDocument _configDoc;
 		private Hashtable _transTypes;
+		private string _path;
 
 		private CheckbookConfig()
 		{
 			Assembly a = Assembly.GetExecutingAssembly();
-			string path = a.Location.Replace("Checkbook.exe", "Checkbook.config");
+			_path = a.Location.Replace("Checkbook.exe", "Checkbook.config");
 			
 			_configDoc = new XmlDocument();
-			_configDoc.Load(path);
+			_configDoc.Load(_path);
 		}
 
 		public static CheckbookConfig GetInstance()
@@ -36,7 +37,7 @@ namespace Checkbook
 
 		public void Save()
 		{
-			_configDoc.Save("Checkbook.config");
+			_configDoc.Save(_path);
 		}
 
 		#region Database
